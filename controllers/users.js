@@ -2,6 +2,10 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const InvalidRequestError = require('../errors/InvalidRequestError');
+const MongoError = require('../errors/MongoError');
+const NotFoundError = require('../errors/NotFoundError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 module.exports.createUser = (req, res, next) => {
   const {name, email, password} = req.body;
@@ -12,13 +16,18 @@ module.exports.createUser = (req, res, next) => {
       password: hash,
     }))
     .then((user) => {
-      res.status(201).send({
+      res.status(200).send({
         _id: user._id,
         email: user.email,
       });
     })
     .catch((err) => {
-			res.send({ message: err.message });
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
+        next(new InvalidRequestError('Переданы некорректные данные'));
+      } else if (err.name === 'MongoError') {
+        next(new MongoError('Эта почта уже используется'));
+      }
+      next(err);
     });
 };
 
@@ -31,7 +40,7 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
-			res.send(token);
+			res.status(200).send(token);
       res.cookie('jwt', 'Bearer ' + token, { 
         maxAge: 3600000,
         secure: true,
@@ -41,35 +50,42 @@ module.exports.login = (req, res, next) => {
         .end();
     })
     .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
+      if (err.name === 'Error') next(new UnauthorizedError('Неправильные почта или пароль'));
+      next(err);
     });
 };
 
-module.exports.getUserMe = (req, res) => {
+module.exports.getUserMe = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        res.send('Запрашиваемый пользователь не найден');
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
       }
-      res.send({ data: user });
+      res.status(200).send({ data: user });
     })
     .catch((err) => {
-      res.send('Запрашиваемый пользователь не найден');
+      if (err.name === 'CastError'|| err.name === 'ValidationError') {
+        next(new InvalidRequestError('Переданы некорректные данные'));
+      } else {
+        next(err);
+      }
     });
 };
 
-module.exports.updateProfile = (req, res) => {
+module.exports.updateProfile = (req, res, next) => {
   const { name, email } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, email }, { runValidators: true, new: true })
     .then((user) => {
       if (!user) {
-        res.send('Запрашиваемый пользователь не найден');
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
       }
-      res.send({ data: user });
+      res.status(200).send({ data: user });
     })
     .catch((err) => {
-			res.send('Произошла ошибка при обновлении данных');
+      if (err.name === 'CastError'|| err.name === 'ValidationError') {
+        next(new InvalidRequestError('Переданы некорректные данные'));
+      } else {
+        next(err);
+      }
     });
 };
