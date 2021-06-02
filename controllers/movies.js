@@ -6,7 +6,7 @@ const InvalidRequestError = require('../errors/InvalidRequestError');
 module.exports.addMovie = (req, res, next) => {
     const { country, director, duration, year, description, image, trailer, nameRU, nameEN, thumbnail, movieId } = req.body;
     Movie.create({ country, director, duration, year, description, image, trailer, nameRU, nameEN, thumbnail, movieId, owner: req.user._id })
-      .then((movie) => res.send(movie))
+      .then((movie) => res.status(200)(movie))
       .catch((err) => {
         if (err.name === 'CastError' || err.name === 'ValidationError') {
           next(new InvalidRequestError('Переданы некорректные данные'));
@@ -18,7 +18,7 @@ module.exports.addMovie = (req, res, next) => {
 
   module.exports.getMovies = (req, res, next) => {
     Movie.find({})
-      .then((movie) => res.send(movie))
+      .then((movie) => res.status(200)(movie))
       .catch(next)
   };
 
