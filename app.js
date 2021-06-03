@@ -1,15 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const app = express();
 const bodyParser = require('body-parser');
-const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const processingErrors = require('./middlewares/processingErrors');
 const router = require('./routes');
 const { requestLogger, errorLogger } = require('./middlewares/logger'); 
 const { PORT = 3000 } = process.env;
-
-
+const helmet = require('helmet');
+const app = express();
+app.use(helmet);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
