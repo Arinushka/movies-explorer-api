@@ -6,6 +6,7 @@ const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const processingErrors = require('./middlewares/processingErrors');
 const router = require('./routes');
+const { requestLogger, errorLogger } = require('./middlewares/logger'); 
 const { PORT = 3000 } = process.env;
 
 
@@ -19,8 +20,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
   useFindAndModify: false,
 });
-
+app.use(requestLogger);
 app.use('/', router);
+app.use(errorLogger);
 app.use(errors());
 app.use(processingErrors);
 
