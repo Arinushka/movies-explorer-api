@@ -1,11 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const router = require('./routes');
+const app = express();
 const bodyParser = require('body-parser');
+const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const processingErrors = require('./middlewares/processingErrors');
+const router = require('./routes');
 const { PORT = 3000 } = process.env;
 
-const app = express();
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -18,7 +21,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 app.use('/', router);
-
+app.use(errors());
 app.use(processingErrors);
 
 app.listen(PORT) 
