@@ -86,6 +86,8 @@ module.exports.updateProfile = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new InvalidRequestError(INVALID_REQUEST_ERROR));
+      } else if (err.name === 'MongoError') {
+        next(new MongoError(MONGO_ERROR));
       } else {
         next(err);
       }
