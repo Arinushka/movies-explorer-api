@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const isEmail = require('validator/lib/isEmail');
 const bcrypt = require('bcryptjs');
-const UnauthorizedError = require('../../react-mesto-api-full/backend/errors/unauthorizedError');
 const { UNAUTHORIZED_ERROR, EMAIL_ERROR } = require('../utils/constans');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const userSchema = new mongoose.Schema({
   name: {
