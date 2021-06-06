@@ -1,5 +1,5 @@
 const { celebrate, Joi } = require('celebrate');
-const urlValidation = require('../errors/CelebrateError');
+const { urlValidation } = require('../errors/CelebrateError');
 
 module.exports.registerValidation = celebrate({
   body: Joi.object().keys({
