@@ -91,3 +91,7 @@ module.exports.updateProfile = (req, res, next) => {
       }
     });
 };
+
+module.exports.signOut = (req, res) => {
+  res.clearCookie('jwt').end();
+};
