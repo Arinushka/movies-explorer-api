@@ -1,4 +1,3 @@
-const { NODE_ENV, JWT_SECRET } = process.env;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
@@ -9,6 +8,7 @@ const UnauthorizedError = require('../errors/UnauthorizedError');
 const {
   INVALID_REQUEST_ERROR, MONGO_ERROR, UNAUTHORIZED_ERROR, NOT_FOUND_USER,
 } = require('../utils/constans');
+const { JWT_SECRET } = require('../utils/configEnv');
 
 module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
@@ -40,7 +40,7 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        JWT_SECRET,
         { expiresIn: '7d' },
       );
       res.cookie('jwt', `Bearer ${token}`, {

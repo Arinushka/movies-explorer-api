@@ -8,9 +8,8 @@ const processingErrors = require('./middlewares/processingErrors');
 const router = require('./routes');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { PORT = 3000 } = process.env;
-
 const { limiter } = require('./middlewares/limiter');
+const { DATA_BASE, PORT } = require('./utils/configEnv');
 
 const app = express();
 app.use(helmet());
@@ -18,7 +17,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect('mongodb://localhost:27017/mestodb', {
+mongoose.connect(DATA_BASE, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,

@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../../react-mesto-api-full/backend/errors/unauthorizedError');
+const { JWT_SECRET } = require('../utils/configEnv');
 const { AUTHORIZATION_ERROR } = require('../utils/constans');
-
-const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
   const authorization = req.cookies.jwt;
@@ -12,7 +11,7 @@ module.exports = (req, res, next) => {
   const token = authorization.replace('Bearer ', '');
   let payload;
   try {
-    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
+    payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     next(new UnauthorizedError(AUTHORIZATION_ERROR));
   }
