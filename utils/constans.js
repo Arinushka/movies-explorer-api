@@ -10,6 +10,10 @@ const EMAIL_ERROR = 'Неправильный формат почты';
 const LINK_ERROR = 'Неверный формат ссылки';
 const SERVER_ERROR = 'На сервере произошла ошибка';
 const NOT_FOUND_ERROR = 'Ресурс не найден';
+const corsOptions = {
+  origin: ['http://localhost:3000'],
+  credentials: true,
+};
 
 module.exports = {
   INVALID_REQUEST_ERROR,
@@ -24,4 +28,5 @@ module.exports = {
   LINK_ERROR,
   SERVER_ERROR,
   NOT_FOUND_ERROR,
+  corsOptions,
 };
