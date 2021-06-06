@@ -6,6 +6,7 @@ const InvalidRequestError = require('../errors/InvalidRequestError');
 const MongoError = require('../errors/MongoError');
 const NotFoundError = require('../errors/NotFoundError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
+const { INVALID_REQUEST_ERROR, MONGO_ERROR, UNAUTHORIZED_ERROR, NOT_FOUND_USER } = require('../utils/constans');
 
 module.exports.createUser = (req, res, next) => {
   const {name, email, password} = req.body;
@@ -23,9 +24,9 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(new InvalidRequestError('Переданы некорректные данные'));
+        next(new InvalidRequestError(INVALID_REQUEST_ERROR));
       } else if (err.name === 'MongoError') {
-        next(new MongoError('Эта почта уже используется'));
+        next(new MongoError(MONGO_ERROR));
       }
       next(err);
     });
@@ -50,7 +51,7 @@ module.exports.login = (req, res, next) => {
         .end();
     })
     .catch((err) => {
-      if (err.name === 'Error') next(new UnauthorizedError('Неправильные почта или пароль'));
+      if (err.name === 'Error') next(new UnauthorizedError(UNAUTHORIZED_ERROR));
       next(err);
     });
 };
@@ -59,13 +60,13 @@ module.exports.getUserMe = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Запрашиваемый пользователь не найден');
+        throw new NotFoundError(NOT_FOUND_USER);
       }
       res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError'|| err.name === 'ValidationError') {
-        next(new InvalidRequestError('Переданы некорректные данные'));
+        next(new InvalidRequestError(INVALID_REQUEST_ERROR));
       } else {
         next(err);
       }
@@ -77,13 +78,13 @@ module.exports.updateProfile = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, { name, email }, { runValidators: true, new: true })
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Запрашиваемый пользователь не найден');
+        throw new NotFoundError(NOT_FOUND_USER);
       }
       res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError'|| err.name === 'ValidationError') {
-        next(new InvalidRequestError('Переданы некорректные данные'));
+        next(new InvalidRequestError(INVALID_REQUEST_ERROR));
       } else {
         next(err);
       }

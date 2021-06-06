@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { LINK_ERROR } = require('../utils/constans');
 
 
 const movieSchema = new mongoose.Schema({
@@ -28,7 +29,7 @@ const movieSchema = new mongoose.Schema({
 			validator(url) {
 				return /(https?):\/\/\S{2,}\.\S{2,}/.test(url);
 			},
-			message: 'Неверный формат ссылки',
+			message: LINK_ERROR,
 		},
 		required: true,
 	},
@@ -38,7 +39,7 @@ const movieSchema = new mongoose.Schema({
 			validator(url) {
 				return /(https?):\/\/\S{2,}\.\S{2,}/.test(url);
 			},
-			message: 'Неверный формат ссылки',
+			message: LINK_ERROR,
 		},
 		required: true,
 	},
@@ -48,7 +49,7 @@ const movieSchema = new mongoose.Schema({
 			validator(url) {
 				return /(https?):\/\/\S{2,}\.\S{2,}/.test(url);
 			},
-			message: 'Неверный формат ссылки',
+			message: LINK_ERROR,
 		},
 		required: true,
 	},

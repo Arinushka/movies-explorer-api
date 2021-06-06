@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const isEmail = require('validator/lib/isEmail');
 const bcrypt = require('bcryptjs');
 const UnauthorizedError = require('../../react-mesto-api-full/backend/errors/unauthorizedError');
+const { UNAUTHORIZED_ERROR, EMAIL_ERROR } = require('../utils/constans');
 
 const userSchema = new mongoose.Schema({
 	name: {
@@ -16,7 +17,7 @@ const userSchema = new mongoose.Schema({
 		unique: true,
 		validate: {
 			validator: (v) => isEmail(v),
-			message: 'Неправильный формат почты',
+			message: EMAIL_ERROR,
 		},
 	},
 	password: {
@@ -32,12 +33,12 @@ userSchema.statics.findUserByCredentials = function (email, password, next) { //
 	return this.findOne({ email }).select('+password')
 	  .then((user) => {
 		if (!user) {
-		  throw new UnauthorizedError('Неправильные почта или пароль');
+		  throw new UnauthorizedError(UNAUTHORIZED_ERROR);
 		}
 		return bcrypt.compare(password, user.password)
 		  .then((matched) => {
 			if (!matched) {
-			  throw new UnauthorizedError('Неправильные почта или пароль');
+			  throw new UnauthorizedError(UNAUTHORIZED_ERROR);
 			}
 			return user;
 		  })

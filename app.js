@@ -23,9 +23,7 @@ app.use(requestLogger);
 app.use(limiter);
 app.use('/', router);
 app.use(errorLogger);
-app.use('*', (req, res, next) => { // eslint-disable-line
-    next(new NotFoundError('Ресурс не найден'));
-  });
+
 app.use(errors());
 app.use(processingErrors);
 

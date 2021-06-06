@@ -1,3 +1,5 @@
+const { SERVER_ERROR } = require("../utils/constans");
+
 module.exports = (err, req, res, next)=>{
     const { statusCode = 500, message } = err;
     res
@@ -5,7 +7,7 @@ module.exports = (err, req, res, next)=>{
       .send({
   
         message: statusCode === 500
-          ? err.message
+          ? SERVER_ERROR
           : message,
       });
     }
