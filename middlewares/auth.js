@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../../react-mesto-api-full/backend/errors/unauthorizedError');
 const { AUTHORIZATION_ERROR } = require('../utils/constans');
+
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
@@ -16,5 +17,5 @@ module.exports = (req, res, next) => {
     next(new UnauthorizedError(AUTHORIZATION_ERROR));
   }
   req.user = payload;
-  return next(); 
+  return next();
 };

@@ -7,13 +7,12 @@ const { registerValidation, authValidation } = require('../middlewares/bodyValid
 const NotFoundError = require('../../react-mesto-api-full/backend/errors/notFoundError');
 const { NOT_FOUND_ERROR } = require('../utils/constans');
 
-
 router.post('/signup', registerValidation, createUser);
 router.post('/signin', authValidation, login);
 
 router.use(auth, user);
 router.use(auth, movie);
-router.use((req,res,next)=>{
-    next(new NotFoundError(NOT_FOUND_ERROR));
-})
+router.use((req, res, next) => {
+  next(new NotFoundError(NOT_FOUND_ERROR));
+});
 module.exports = router;

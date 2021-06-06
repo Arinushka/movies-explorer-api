@@ -2,12 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
+const helmet = require('helmet');
 const processingErrors = require('./middlewares/processingErrors');
 const router = require('./routes');
-const { requestLogger, errorLogger } = require('./middlewares/logger'); 
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
 const { PORT = 3000 } = process.env;
-const helmet = require('helmet');
+
 const { limiter } = require('./middlewares/limiter');
+
 const app = express();
 app.use(helmet());
 app.use(bodyParser.json());
@@ -27,4 +30,4 @@ app.use(errorLogger);
 app.use(errors());
 app.use(processingErrors);
 
-app.listen(PORT) 
+app.listen(PORT);

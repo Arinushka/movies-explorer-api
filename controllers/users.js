@@ -1,15 +1,17 @@
 const { NODE_ENV, JWT_SECRET } = process.env;
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const User = require('../models/user');
 const InvalidRequestError = require('../errors/InvalidRequestError');
 const MongoError = require('../errors/MongoError');
 const NotFoundError = require('../errors/NotFoundError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
-const { INVALID_REQUEST_ERROR, MONGO_ERROR, UNAUTHORIZED_ERROR, NOT_FOUND_USER } = require('../utils/constans');
+const {
+  INVALID_REQUEST_ERROR, MONGO_ERROR, UNAUTHORIZED_ERROR, NOT_FOUND_USER,
+} = require('../utils/constans');
 
 module.exports.createUser = (req, res, next) => {
-  const {name, email, password} = req.body;
+  const { name, email, password } = req.body;
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name,
@@ -41,8 +43,8 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
-			res.status(200).send(token);
-      res.cookie('jwt', 'Bearer ' + token, { 
+      res.status(200).send(token);
+      res.cookie('jwt', `Bearer ${token}`, {
         maxAge: 3600000,
         secure: true,
         httpOnly: true,
@@ -65,7 +67,7 @@ module.exports.getUserMe = (req, res, next) => {
       res.status(200).send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'CastError'|| err.name === 'ValidationError') {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new InvalidRequestError(INVALID_REQUEST_ERROR));
       } else {
         next(err);
@@ -83,7 +85,7 @@ module.exports.updateProfile = (req, res, next) => {
       res.status(200).send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'CastError'|| err.name === 'ValidationError') {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new InvalidRequestError(INVALID_REQUEST_ERROR));
       } else {
         next(err);
