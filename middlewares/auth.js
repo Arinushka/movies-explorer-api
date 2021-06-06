@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const UnauthorizedError = require('../../react-mesto-api-full/backend/errors/unauthorizedError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 const { JWT_SECRET } = require('../utils/configEnv');
 const { AUTHORIZATION_ERROR } = require('../utils/constans');
 
