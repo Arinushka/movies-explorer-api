@@ -28,7 +28,7 @@ mongoose.connect(DATA_BASE, {
 });
 app.use(requestLogger);
 
-// app.use(limiter);
+app.use(limiter);
 app.use('/', router);
 app.use(errorLogger);
 

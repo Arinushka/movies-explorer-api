@@ -51,22 +51,16 @@ module.exports.getMovies = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  Movie.findById(req.params.movieId)
+  Movie.findOne({ movieId: req.params.movieId })
     .then((movie) => {
       if (!movie) {
         throw new NotFoundError(NOT_FOUND_MOVIE);
       } if (req.user._id !== movie.owner._id.toString()) {
         throw new ForbiddenError(FORBIDDEN_ERROR);
       }
-      Movie.findByIdAndDelete(movie)
-        .then(() => res.status(200).send({ message: SUCCESS }))
-        .catch((err) => {
-          if (err.name === 'CastError' || err.name === 'ValidationError') {
-            next(new InvalidRequestError(INVALID_REQUEST_ERROR));
-          } else {
-            next(err);
-          }
-        });
+      movie.remove()
+        .then(() => res.status(200).send(movie))
+        .catch(next);
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
