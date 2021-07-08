@@ -11,7 +11,7 @@ const LINK_ERROR = 'Неверный формат ссылки';
 const SERVER_ERROR = 'На сервере произошла ошибка';
 const NOT_FOUND_ERROR = 'Ресурс не найден';
 const corsOptions = {
-  origin: ['https://filmstrom.nomoredomains.monster'],
+  origin: ['https://filmstrom.nomoredomains.monster', 'http://localhost:3000'],
   credentials: true,
 };
 
